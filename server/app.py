@@ -9,12 +9,13 @@ import together
 import re
 from actions import calendar_add, slack_add  # Importing functions
 from datetime import datetime, timedelta
-
+from flask import Flask
+from flask_cors import CORS, cross_origin
 
 together.api_key = '85ef951589f8fd8bfe69e6ef83d82dd664050bbe22ecddc7eee53c6b07718b5d'
 
 # Choose the duration of the recording in seconds and the sampling frequency
-duration = 5  # seconds
+duration = 2  # seconds
 fs = 16000
 
 # Function to record audio
@@ -151,43 +152,69 @@ def main():
     print("Transcription: ", transcription)
 
     prompt = "if there is any mention of a date or time that has been finalized in the following text, write it in the format of: year/month/day. If there isn't a date, use today's date: '2023/10/28'. This is the following text: [" + transcription + "]"
-    promptStage2 = "If there is any mention of an office issue in the following transcription, generate a short 3 sentence task list of the things needed to get done (leave blank if there aren't issues). Transcription: [" + transcription + "]"
+    promptStage2 = "If there is any mention of a task in the following transcription, generate a short 3 sentence task list of the things needed to get done (leave blank if there aren't issues). Transcription: [" + transcription + "]"
     promptStage3 = "State all the facts from the following text: [" + transcription + "]"
     dateTime = ""
     timeTime = ""
     slackMessage=""
     output=""
 
-    # for token in together.Complete.create_streaming(prompt=prompt, model="garage-bAInd/Platypus2-70B-instruct"):
-    #   print(token, end="", flush=True)
-    #   dateTime+=token
-    # print("\n")
-    # newDateTime = clean_date_string(dateTime)
+    for token in together.Complete.create_streaming(prompt=prompt, model="garage-bAInd/Platypus2-70B-instruct"):
+      print(token, end="", flush=True)
+      dateTime+=token
+    print("\n")
+    newDateTime = clean_date_string(dateTime)
 
-    # for token in together.Complete.create_streaming(prompt="if there is any mention of a time that has been finalized in the following text, write it in the format of: hour:minute PM. If there isn't a time, use '6:00 PM'. This is the following text: [" + transcription + "]", model="garage-bAInd/Platypus2-70B-instruct"):
-    #   print(token, end="", flush=True)
-    #   timeTime+=token
-    # print("\n")
-    # print(newDateTime)
-    # newTimeTime = extract_time(timeTime)
+    for token in together.Complete.create_streaming(prompt="if there is any mention of a time that has been finalized in the following text, write it in the format of: hour:minute PM. If there isn't a time, use '6:00 PM'. This is the following text: [" + transcription + "]", model="garage-bAInd/Platypus2-70B-instruct"):
+      print(token, end="", flush=True)
+      timeTime+=token
+    print("\n")
+    print(newDateTime)
+    newTimeTime = extract_time(timeTime)
 
-    # print(newTimeTime)
-    # endTime = add_one_hour(newTimeTime)
-    # print(endTime)
+    print(newTimeTime)
+    endTime = add_one_hour(newTimeTime)
+    print(endTime)
 
-    # calendar_add(newDateTime, newTimeTime, endTime, "test meeting")
+    try:
+        calendar_add(newDateTime, newTimeTime, endTime, "test meeting")
+    except:
+        pass
 
     for token in together.Complete.create_streaming(prompt=promptStage2, model="garage-bAInd/Platypus2-70B-instruct"):
       print(token, end="", flush=True)
       slackMessage+=token
     print("\n")
 
-    slack_add(slackMessage)
+    try: 
+        slack_add(slackMessage)
+    except:
+        pass
 
     for token in together.Complete.create_streaming(prompt=promptStage3, model="garage-bAInd/Platypus2-70B-instruct"):
       print(token, end="", flush=True)
-      output+=token
+      output += token
     print("\n")
 
+    return transcription, output
+
 if __name__ == "__main__":
-    main()
+    t, f = main()
+    #t, f = "transcript", "facts"
+
+    app = Flask(__name__)
+    cors = CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+
+    @app.route('/transcript')
+    @cross_origin()
+    def transcript():
+        print('trasncription', t)
+        return t
+    
+    @app.route('/facts')
+    @cross_origin()
+    def facts():
+        return f
+    app.run()
+

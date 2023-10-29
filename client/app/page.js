@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function Home() {
   const [transcript, setTranscript] = useState(""); // Initialize with an empty string or the appropriate default value
@@ -8,8 +9,9 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://your-backend-api.com/api/endpoint");
-        setTranscript(response.data.transcript); // Update the responseData state with the response data
+        const response = await axios.get("http://127.0.0.1:5000/transcript");
+        setTranscript(response.data); // Update the responseData state with the response data
+        //console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -23,8 +25,10 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://your-backend-api.com/api/endpoint");
-        setFacts(response.data.facts); // Update the responseData state with the response data
+        const response = await axios.get("http://127.0.0.1:5000/facts");
+        console.log(response);
+        setFacts(response.data); // Update the responseData state with the response data
+        //console.log(response.data);
       } catch (error) {
         console.error(error);
       }

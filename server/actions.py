@@ -16,11 +16,13 @@ def calendar_add(date, startTime, endTime, title):
         driver.get(f'https://calendar.google.com/calendar/u/0/r/day/{date}')
         element = driver.find_element(By.CSS_SELECTOR, ".WJVfWe.A3o4Oe")
         element.click()
+        
         startTimeElement = driver.find_element(By.XPATH, '//*[@data-key="startTime"]')
         endTimeElement = driver.find_element(By.XPATH, '//*[@data-key="endTime"]')
         time.sleep(5)
         driver.execute_script("arguments[0].textContent = arguments[1];", startTimeElement, startTime)
         driver.execute_script("arguments[0].textContent = arguments[1];", endTimeElement, endTime)
+        
         input_element = driver.find_element(By.CSS_SELECTOR, ".VfPpkd-fmcmS-wGMbrd")
         #titleElement.click()
         #time.sleep(2)
