@@ -34,8 +34,24 @@ def calendar_add(date, startTime, endTime, title):
         saveButton = driver.find_element(By.CSS_SELECTOR, ".VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.LQeN7.pEVtpe")
         saveButton.click()
         time.sleep(15)
-       
-       
 
+def slack_add(message):
+    with SB(uc=True, headed=True) as driver:
+        driver.get("https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.google.com%2F&ec=GAZAmgQ&hl=en&ifkv=AVQVeyynx9vTWrORetNTDJstyP9KRREywFTztGbPzXPZOA0CLrrBLZexaIuorYLmTqCW3xH2qcyPmg&passive=true&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S-653967197%3A1698546704446367&theme=glif")
+        driver.type("#identifierId", 'calhacks224')
+        driver.click("#identifierNext > div > button")
+        driver.type("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input", 'Dortnite@1233')
+        driver.click("#passwordNext > div > button")
+        time.sleep(2)
+        driver.get("https://slack.com/signin#/signin")
+        googleButton = driver.find_element(By.CSS_SELECTOR, "#google_login_button")
+        googleButton.click()
+        signInButton = driver.find_element(By.CSS_SELECTOR, ".lCoei.YZVTmd.SmR8")
+        signInButton.click()
+        print(signInButton)
+        
+
+       
 if __name__ == '__main__':
-    calendar_add(date='2023/10/29', startTime='7:00pm', endTime='8:00pm', title="Meeting with Kushi")
+    #calendar_add(date='2023/10/29', startTime='7:00pm', endTime='8:00pm', title="Meeting with Kushi")
+    slack_add("Hello there!")
