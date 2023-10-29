@@ -16,7 +16,7 @@ def calendar_add(date, startTime, endTime, title):
         element.click()
         startTimeElement = driver.find_element(By.XPATH, '//*[@data-key="startTime"]')
         endTimeElement = driver.find_element(By.XPATH, '//*[@data-key="endTime"]')
-        time.sleep(2)
+        time.sleep(5)
         driver.execute_script("arguments[0].textContent = arguments[1];", startTimeElement, startTime)
         driver.execute_script("arguments[0].textContent = arguments[1];", endTimeElement, endTime)
         input_element = driver.find_element(By.CSS_SELECTOR, ".VfPpkd-fmcmS-wGMbrd")
@@ -53,5 +53,5 @@ def slack_add(message):
 
        
 if __name__ == '__main__':
-    #calendar_add(date='2023/10/29', startTime='7:00pm', endTime='8:00pm', title="Meeting with Kushi")
-    slack_add("Hello there!")
+    calendar_add(date='2023/10/29', startTime='7:00pm', endTime='8:00pm', title="Meeting with Kushi")
+    #slack_add("Hello there!")
