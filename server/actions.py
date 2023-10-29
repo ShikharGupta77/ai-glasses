@@ -1,6 +1,7 @@
 from seleniumbase import SB
 import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 # date is YYYY/MM/DD
 def calendar_add(date, startTime, endTime, title):
@@ -48,7 +49,11 @@ def slack_add(message):
         googleButton.click()
         signInButton = driver.find_element(By.CSS_SELECTOR, ".lCoei.YZVTmd.SmR8")
         signInButton.click()
-        print(signInButton)
+        time.sleep(20)
+        textInput = driver.find_element(By.CSS_SELECTOR, ".ql-editor")
+        driver.execute_script("arguments[0].querySelector('p').textContent = arguments[1];", textInput, "")
+        textInput.send_keys(Keys.ENTER)
+        time.sleep(50)
         
 
        
